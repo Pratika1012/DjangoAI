@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Interface</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="arrow-buttons">
+                    <button class="btn btn-primary" id="previous-btn">&larr; Previous</button>
+                    <button class="btn btn-primary" id="next-btn">Next &rarr;</button>
+                </div>
+                <h1>Patient Details</h1>
+                <p><strong>Patient ID:</strong> <span id="patientId"></span></p>
+                <p><strong>Name:</strong> <span id="name"></span></p>
+                <p><strong>Date of Birth:</strong> <span id="dateOfBirth"></span></p>
+                <p><strong>Gender:</strong> <span id="gender"></span></p>
+                <p><strong>Contact Number:</strong> <span id="contactNumber"></span></p>
+                <p><strong>Address:</strong> <span id="address"></span></p>
+                <h2>Medical History</h2>
+                <p><strong>Allergies:</strong> <span id="allergies"></span></p>
+                <p><strong>Surgeries:</strong> <span id="surgeries"></span></p>
+                <h3>Family History</h3>
+                <p><strong>Conditions:</strong> <span id="conditions"></span></p>
+                <p><strong>Family Members:</strong> <span id="familyMembers"></span></p>
+                <h3>Conditions and treatments</h3>
+                <p><strong>Family Members:</strong> <span id="familyMembers"></span></p>
+
+            </div>
+            <div class="col-md-6">
+                <h1>Chat Interface</h1>
+                <div class="card mt-4" style="width: 100%; height: 300px;">
+                    <div class="card-header">
+                        
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+                <form id="chat-form">
+                    <div class="input-group mt-3">
+                        <input type="text" class="form-control" id="message-input" placeholder="Type your message...">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        var patients = [
+            {
+            patientId:"123456789",
+            name: "John Doe",
+            dateOfBirth: "1980-01-01",
+            gender: "Male",
+            contactNumber: "+1 (123) 456-7890",
+            address: "123 Main Street, City, State, ZIP",
+            allergies: ["Penicillin", "Peanuts"],
+            surgeries: ["Appendectomy", "Knee arthroscopy"],
+            conditions: ["Diabetes", "Hypertension"],
+            familyMembers: ["Mother", "Father"]
+            },
+
+    
+            
+            {
+                patientId: "987654321",
+                name: "Jane Smith",
+                dateOfBirth: "1990-05-15",
+                gender: "Female",
+                contactNumber: "9876543210",
+                address: "456 Elm Street",
+                allergies:["Sulfa drugs"],
+                surgeries: ["Gallbladder removal"],
+                conditions: ["Heart disease", "Breast cancer"],
+                familyMembers: ["Grandmother", "Sister"]
+            },
+
+            
+            {
+                patientId: "246813579",
+                name: "Sarah Williams",
+                dateOfBirth: "1975-12-03",
+                gender: "Female",
+                contactNumber: "+1 (555) 123-4567",
+                address: "789 Elm Street, City, State, ZIP",
+                allergies: ["Shellfish", "Latex"],
+                surgeries: ["Hip replacement"],
+                conditions: ["Cancer", "Alzheimer's"],
+                familyMembers: ["Father", "Maternal aunt"]
+                  
+                },
+
+                {
+
+                patientId: "135792468",
+                name: "Michael Johnson",
+                dateOfBirth: "1985-03-10",
+                gender: "Male",
+                contactNumber: "+1 (555) 987-6543",
+                address: "789 Maple Avenue, City, State, ZIP",
+                allergies: ["Pollen", "Eggs"],
+                surgeries: ["ACL reconstruction"],
+                conditions: ["Stroke", "Obesity"],
+                familyMembers: ["Grandfather", "Brother"]
+                
+    },
+    {
+
+        patientId: "864209753",
+        name: "Emily Davis ",
+        dateOfBirth: "1990-09-25",
+        gender: "FeMale",
+        contactNumber: "+1 (555) 246-8102",
+        address: "87 Pine Street, City, State, ZIP",
+        allergies: ["Dust mites", "Mold"],
+        surgeries: ["Tonsillectomy"],
+        conditions: ["Rheumatoid Arthritis", "Colon cancer"],
+        familyMembers: ["Mother", "Maternal uncle"]
+        
+}
+
+            
+        ];
+
+        var currentPatientIndex = 0;
+
+        function displayPatientDetails(patient) {
+            $('#patientId').text(patient.patientId);
+            $('#name').text(patient.name);
+            $('#dateOfBirth').text(patient.dateOfBirth);
+            $('#gender').text(patient.gender);
+            $('#contactNumber').text(patient.contactNumber);
+            $('#address').text(patient.address);
+            $('#allergies').text(patient.allergies);
+            $('#surgeries').text(patient.surgeries);
+            $('#conditions').text(patient.conditions);
+            $('#familyMembers').text(patient.familyMembers);
+        }
+
+        function loadPatientDetails() {
+            var patient = patients[currentPatientIndex];
+            displayPatientDetails(patient);
+        }
+
+        // Load initial patient details
+        loadPatientDetails();
+
+        
+       
+       $('#next-btn').click(function() {
+        if (currentPatientIndex < patients.length ) {
+            currentPatientIndex++;
+            loadPatientDetails();
+        }
+    });
+
+        // Previous button click event
+        $('#previous-btn').click(function() {
+            if (currentPatientIndex > 0) {
+                currentPatientIndex--;
+                loadPatientDetails();
+            }
+        });
+        $('#chat-form').submit(function(event) {
+            event.preventDefault();
+            var messageInput = $('#message-input');
+            var message = messageInput.val().trim();
+
+            if (message !== '') {
+                // Display user question in the chat card body
+                var chatBody = $('#chat-body');
+                var userQuestion = '<strong>User:</strong> ' + message + '<br>';
+                chatBody.append(userQuestion);
+
+                // Clear the input field
+                messageInput.val('');
+
+                // Call the ChatGPT API with the user's question
+                callChatGPTAPI(message);
+            }
+        });
+
+        function callChatGPTAPI(question) {
+            // Replace with your API call code here
+            // Make API request to ChatGPT and display the response in the chat card body
+        }
+    </script>
+</body>
+</html>
