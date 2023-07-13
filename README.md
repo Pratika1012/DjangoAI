@@ -839,8 +839,8 @@ h3{
 </html>
 """
 
-### NOW VIEWS.PY
-
+"""Views.py
+WE have created views.py that render to index.html
 import json
 import openai
 from django.shortcuts import render
@@ -861,7 +861,6 @@ patient_files = [
 ]
 
 openai.api_key = "YOUR_OPEN_API_KEY"
-
 memory = []  # Initialize an empty memory list
 currentPatientIndex = 0
 
@@ -923,5 +922,4 @@ def chat_interface(request):
 
     return render(request, 'index.html')
 
-
-
+"""
