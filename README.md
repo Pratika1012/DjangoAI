@@ -19,19 +19,18 @@ OpenAI Python library
 python--dotenv
 Requests library
 
-## versions
+### Versions
+asgiref==3.7.2
 
-Name: Django
-Version: 4.2.2
+Django==4.2.2
 
-Name: sqlparse
-Version: 0.4.4
+python-dateutil==2.8.2
 
-Name: asgiref
-Version: 3.7.2
+six==1.16.0
 
-Name: tzdata
-Version: 2023.3
+sqlparse==0.4.4
+
+tzdata==2023.3
 
 
 
