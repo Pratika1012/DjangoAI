@@ -1,23 +1,26 @@
 import json
 import openai
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.urls import path
+import pdfplumber
+
+
 
 # List of patient JSON file paths
 patient_files = [
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient1.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient2.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient3.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient4.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient5.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient6.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient7.json',
-    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient8.json',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient1.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient2.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient3.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient4.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient5 (1).pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient6.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient7.pdf',
+    r'C:\Users\HP\Desktop\django\iqvia\myapp\data\Patient8 (1).pdf',
     
 ]
 
-openai.api_key = "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"
+# openai.api_key
 
 memory = []  # Initialize an empty memory list
 currentPatientIndex = 0
@@ -26,8 +29,8 @@ def generate_response(input_text):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=input_text,
-        max_tokens=150,
-        temperature=0.7,
+        max_tokens=50,
+        temperature=0.1,
         n=1,
         stop=None
     )
@@ -35,18 +38,34 @@ def generate_response(input_text):
 
 def load_current_patient(ind):
     # Load the current patient's JSON file
-    with open(patient_files[int(ind)]) as file:
-        current_patient_data = json.load(file)
+    
+    with pdfplumber.open(patient_files[int(ind)]) as pdf:
+       text = ""
+       for page in pdf.pages:
+         text += page.extract_text()   
+    return text
 
-    return current_patient_data
+
+
+def process_api_key(request):   
+    if request.method == 'POST':
+        api_key = request.POST.get('api_key')
+        openai.api_key=api_key
+     
+    
+        # return HttpResponse(f"Received API Key: {api_key}")
+
+    return render(request, 'index.html')
 
 def chat_interface(request):
+
     
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
         
         user_input1 = request.POST.get('currentPatientIndex1')
-      
+        
+        
 
         # if user_input.lower() == "what is previous question":
         #     if len(memory) > 0:
@@ -62,11 +81,17 @@ def chat_interface(request):
         #         response = "Chatbot: There is no previous to previous question."
         # else:
         input_text = f"""
-
-            Context: summarize the conditions,Therphay,Treatments,diagnosisdate,startdate,dosage,clinical summary for the patients,what was the last time They  had a visit to her doctor?
-            allergies,surgeries,Lastvisitdate,medicialhistory,dateOfBirth,gender,address of patient contactnumber of patient,
-            doctorname{load_current_patient(user_input1)}
+        delimited by triple quotes \
+        extract the information relevant to patient detail. 
+           question base on contex,give the proper answer,if require long detilts of patients condition then give proper datails step wise
+            Context: what was the paitentId,dateofBirth,gender,medicalhistory,diagnosisdate Of Patient
+            What medical history allergies patient surgiers,conditions,family history,Family Members have,
+            Treatments name,Startdate,dosage of patient,lastVisitdate,Doctorname,address of patient,\
+            answer size is maximum 200 words
+            contex:{load_current_patient(user_input1)}
+            
             Question: {user_input}
+            
 
             Answer:
             """
@@ -79,3 +104,20 @@ def chat_interface(request):
         return JsonResponse({'response': response})
 
     return render(request, 'index.html')
+urlpatterns = [
+    path('chat-interface/', chat_interface, name='chat_interface'),
+    path('process_api_key/', process_api_key, name='process_api_key'),
+
+]
+
+
+
+
+
+
+
+
+
+
+
+
