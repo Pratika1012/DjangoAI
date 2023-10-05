@@ -65,6 +65,15 @@ h3{
   <body>
     <div class="form-group">
       <h2><center>DEMO</h2></center>
+      <form method="post" action="{% url 'process_api_key' %}">
+        {% csrf_token %}
+        <label for="api_key">API Key:</label>
+        <input type="password" name="api_key" id="api_key">
+        {% comment %} <button type="submit">Submit</button> {% endcomment %}
+    </form>
+    
+
+
       <label for="patientSelect">Select Patient:</label>
       <select class="form-control custom-select" id="patientSelect">
         
@@ -78,7 +87,9 @@ h3{
         <option value="Daniel Wilson">Daniel Wilson</option>
       </select>
     </div>
-    </div>
+  </div>
+
+
     <div class="container">
       <div class="row">
         <h3>Patient Details</h3>
